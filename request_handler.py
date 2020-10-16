@@ -1,7 +1,7 @@
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from entries import get_all_entries, get_single_entry
-# from .moods import get_all_moods, get_single_mood
+from moods import get_all_moods, get_single_mood
 
 class HandleRequests(BaseHTTPRequestHandler):
 
@@ -65,6 +65,13 @@ class HandleRequests(BaseHTTPRequestHandler):
                   else:
                       response = f"{get_all_entries()}"
                       self.wfile.write(response.encode())
+
+              elif resource == "moods":
+                    if id is not None:
+                        response = f"{get_single_mood(id)}"
+                        self.wfile.write(response.encode())
+                    else:
+                        response = f"{get_all_moods()}"
 
 def main():
   host = ''
