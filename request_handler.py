@@ -60,23 +60,23 @@ class HandleRequests(BaseHTTPRequestHandler):
             if resource == "entries":
                 if id is not None:
                     response = f"{get_single_entry(id)}"
-                    self.wfile.write(response.encode())
+
                 else:
                     response = f"{get_all_entries()}"
-                    self.wfile.write(response.encode())
+
 
             elif resource == "moods":
                 if id is not None:
                     response = f"{get_single_mood(id)}"
-                    self.wfile.write(response.encode())
+
                 else:
                     response = f"{get_all_moods()}"
-                    self.wfile.write(response.encode())
+
 
         elif len(parsed) == 3:
                 ( resource, key, value ) = parsed
 
-                if key == "q" and resource == "entry":
+                if key == "q" and resource == "entries":
                     response = get_entry_by_word(value)
 
         self.wfile.write(response.encode())
