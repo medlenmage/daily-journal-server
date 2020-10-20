@@ -65,3 +65,30 @@ def delete_entry(id):
         DELETE FROM entries
         WHERE id = ?
         """, (id, ))
+
+def get_entry_by_word(word):
+
+    with sqlite3.connect("./dailyjournal.db") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        # Write the SQL query to get the information you want
+        db_cursor.execute("""
+        select
+            a.id,
+            a.concept,
+            a.entry,
+            a.date,
+            a.moodId
+        from entries a
+        WHERE a.word = ?
+        """, ( word, ))
+
+        entries = []
+        dataset = db_cursor.fetchall()
+
+        for row in dataset:
+            entry = Entries(row['id'], row['concept'], row['entry'], row['date'] , row['mood'])
+            entries.append(entry.__dict__)
+
+    return json.dumps(entries)
