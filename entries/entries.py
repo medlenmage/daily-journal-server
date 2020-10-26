@@ -78,14 +78,8 @@ def create_entry(new_entry):
         """, (new_entry['concept'], new_entry['entry'],
               new_entry['date'], new_entry['moodId'] ))
 
-        # The `lastrowid` property on the cursor will return
-        # the primary key of the last thing that got added to
-        # the database.
         id = db_cursor.lastrowid
 
-        # Add the `id` property to the animal dictionary that
-        # was sent by the client so that the client sees the
-        # primary key in the response.
         new_entry['id'] = id
 
 
@@ -100,13 +94,36 @@ def delete_entry(id):
         WHERE id = ?
         """, (id, ))
 
+def update_entry(id, new_entry):
+    with sqlite3.connect("./dailyjournal.db") as conn:
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+        UPDATE Entry
+            SET
+                concept = ?,
+                entry = ?,
+                date = ?,
+                moodId = ?,
+        WHERE id = ?
+        """, (new_entry['concept'], new_entry['entry'],
+              new_entry['date'], new_entry['moodId'], 
+              id, ))
+
+        rows_affected = db_cursor.rowcount
+    
+    if rows_affected == 0:
+        return False
+    else:
+        return True
+
+
 def get_entry_by_word(q):
 
     with sqlite3.connect("./dailyjournal.db") as conn:
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
 
-        # Write the SQL query to get the information you want
         db_cursor.execute("""
         select
             a.id,
